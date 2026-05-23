@@ -31,10 +31,10 @@ object Templates {
             div(cls:="poster",
               a(cls:="playButton", href:=s"${movie.url}/play", playButton),
               a(cls:="border", href:=movie.url),
-              img(src:=movie.poster)
+              img(src:=movie.poster.getOrElse(""))
             ),
-            a(href:=movie.url, title:=movie.name, movie.name),
-            div(cls:="secondary", movie.releaseDate.format(dateFormat))
+            a(href:=movie.url, title:=movie.title, movie.title),
+            div(cls:="secondary", movie.releaseDate.map(dateFormat.format).getOrElse("Unknown"))
           )
         }
       )

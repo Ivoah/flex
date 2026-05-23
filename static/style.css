@@ -32,6 +32,8 @@ img {
     width: 130px;
     height: 195px;
 
+    background-color: #222;
+
     display: grid;
     grid-template: "c" auto / auto;
 
@@ -57,7 +59,7 @@ img {
       justify-self: center;
       align-self: center;
 
-      transition: all .2s;
+      transition: all 250ms;
       &:hover {
         border-color: orange;
         background-color: orange;
