@@ -23,14 +23,15 @@ object Templates {
     head(
       link(rel:="icon", href:="/static/icon.svg"),
       link(rel:="stylesheet", href:="/static/style.css"),
-      link(rel:="stylesheet", href:="/static/fa/css/fontawesome.min.css"),
-      link(rel:="stylesheet", href:="/static/fa/css/solid.min.css"),
       tag("title")("Flex")
     ),
     body(
+      div(cls:="header",
+        "Flex"
+      ),
       div(cls:="sidebar",
         for (library <- allLibraries) yield a(href:=s"/${library.name}",
-          i(cls:=s"fa-solid fa-${library.icon}"), library.name
+          Icons.get(library.icon), library.name
         )
       ),
       div(cls:="movies",
