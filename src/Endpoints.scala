@@ -21,6 +21,15 @@ class Endpoints(debug: Boolean = false) {
     case ("GET", "/", _) =>
       Response.Redirect(s"/${Database.getLibraries().head.name}")
 
+    case ("POST", s"/scan/$library", _) =>
+      val allLibraries = Database.getLibraries()
+      allLibraries.find(_.name == library)
+        .map { l =>
+          l.scan(tmdb)
+          Response.Redirect(s"/$library")
+        }
+        .getOrElse(Response.NotFound())
+
     case ("GET", s"/$library", _) =>
       val allLibraries = Database.getLibraries()
       allLibraries.find(_.name == library)

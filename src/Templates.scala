@@ -30,12 +30,13 @@ object Templates {
         "Flex"
       ),
       div(cls:="sidebar",
-        for (library <- allLibraries) yield a(href:=s"/${library.name}",
-          Icons.get(library.icon), library.name
+        for (library <- allLibraries) yield div(cls:="library",
+          a(cls:="libraryLink clickable", href:=s"/${library.name}", Icons.get(library.icon), library.name),
+          form(method:="POST", action:=s"/scan/${library.name}", button(cls:="scan clickable", Icons.get("refresh")))
         )
       ),
       div(cls:="movies",
-        for (movie <- library.items) yield {
+        for (movie <- library.items.sortBy(_.releaseDate).reverse) yield {
           div(cls:="movie",
             div(cls:="poster",
               a(cls:="playButton", href:=s"${movie.url}/play", playButton),

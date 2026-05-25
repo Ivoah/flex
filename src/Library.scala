@@ -14,7 +14,7 @@ case class Library(libraryId: Int, name: String, icon: String, path: File) {
         case _ => None
       }
     }.filter {
-      case (title, year) => !items.contains((m: Movie) => m.title == title && m.year == year)
+      case (title, year) => !items.exists(m => m.title == title && m.year == year)
     }.foreach {
       case (title, year) =>
         Database.saveMovie(libraryId, meta.hydrate(Movie(0, title, year)))

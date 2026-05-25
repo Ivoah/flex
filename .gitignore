@@ -5,3 +5,4 @@
 .vscode/
 out/
 application.conf
+library.sqlite
