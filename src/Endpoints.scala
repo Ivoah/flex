@@ -6,11 +6,9 @@ import java.io.File
 import java.nio.file.Paths
 import java.time.LocalDate
 
-class Endpoints(libraryPath: File, debug: Boolean = false) {
-  private val meta = TheMovieDB(Config.tmdb.token)
-  private val library = libraryPath.list.collect {
-    case s"$title (${IntExtractor(year)})" => meta.hydrate(Movie(title, year))
-  }
+class Endpoints(debug: Boolean = false) {
+  private val tmdb = TheMovieDB(Config.tmdb.token)
+  // private val library = Library.scan(libraryPath, tmdb)
 
   def router: Router = Router {
     case (_, _, _, e) if debug =>
@@ -20,6 +18,13 @@ class Endpoints(libraryPath: File, debug: Boolean = false) {
     case ("GET", s"/static/$file", _) =>
       Response.forFile(Paths.get("static"), Paths.get(file))
 
-    case ("GET", "/", _) => Response(Templates.root(library))
+    case ("GET", "/", _) =>
+      Response.Redirect(s"/${Database.getLibraries().head.name}")
+
+    case ("GET", s"/$library", _) =>
+      val allLibraries = Database.getLibraries()
+      allLibraries.find(_.name == library)
+        .map(l => Response(Templates.library(allLibraries, l)))
+        .getOrElse(Response.NotFound())
   }
 }

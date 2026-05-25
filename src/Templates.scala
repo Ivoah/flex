@@ -19,14 +19,22 @@ object Templates {
   }
   private val playButton = regularPolygon((256, 256), 64, 3)
 
-  def root(movies: Seq[Movie]): String = doctype("html")(html(
+  def library(allLibraries: Seq[Library], library: Library): String = doctype("html")(html(
     head(
+      link(rel:="icon", href:="/static/icon.svg"),
       link(rel:="stylesheet", href:="/static/style.css"),
+      link(rel:="stylesheet", href:="/static/fa/css/fontawesome.min.css"),
+      link(rel:="stylesheet", href:="/static/fa/css/solid.min.css"),
       tag("title")("Flex")
     ),
     body(
+      div(cls:="sidebar",
+        for (library <- allLibraries) yield a(href:=s"/${library.name}",
+          i(cls:=s"fa-solid fa-${library.icon}"), library.name
+        )
+      ),
       div(cls:="movies",
-        for (movie <- movies) yield {
+        for (movie <- library.items) yield {
           div(cls:="movie",
             div(cls:="poster",
               a(cls:="playButton", href:=s"${movie.url}/play", playButton),

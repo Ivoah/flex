@@ -7,3 +7,4 @@ mvnDeps:
 - com.typesafe:config:1.4.8
 - com.lihaoyi::requests:0.9.3
 - com.lihaoyi::upickle:4.4.3
+- org.xerial:sqlite-jdbc:3.53.1.0

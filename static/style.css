@@ -1,27 +1,53 @@
 @import url(/static/reset.css);
 
 body {
-  /*background: #1e1e1e;*/
   background-image: url('/static/background.svg');
-  /*background-repeat: no-repeat;*/
   color: white;
   font-family: -apple-system, sans-serif;
   font-size: 13px;
-}
+  display: grid;
+  height: 100vh;
 
-img {
-  display: block;
-  max-width: 100%;
+  grid-template-areas: "sidebar movies";
+  grid-template-columns: auto 1fr;
 }
 
 .secondary {
-  color: rgba(255 ,255, 255, 0.45);
+  color: rgba(255 ,255, 255, 45%);
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: rgba(0, 0, 0, 25%);
+  margin: 5px;
+  padding: 15px;
+  border-radius: 5px;
+
+  > a {
+    display: flex;
+    align-items: center;
+    font-size: 14pt;
+    color: lightgray;
+    text-decoration: none;
+    transition: all 250ms;
+    > i {
+      font-size: 1.5em;
+      margin-right: 10px;
+    }
+
+    &:hover {
+      color: white;
+    }
+  }
 }
 
 .movies {
+  grid-area: movies;
+  padding: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  overflow: scroll;
 }
 
 .movie {
@@ -53,13 +79,13 @@ img {
       border-radius: 50%;
       border: 2px solid lightgray;
       color: lightgray;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 50%);
       overflow: hidden;
+      transition: all 250ms;
 
       justify-self: center;
       align-self: center;
 
-      transition: all 250ms;
       &:hover {
         border-color: orange;
         background-color: orange;
@@ -70,7 +96,7 @@ img {
     .border {
       z-index: 1;
       display: none;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 50%);
       border-radius: 3px;
       border: 1px solid orange;
     }

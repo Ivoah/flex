@@ -12,7 +12,6 @@ def main(args: String*): Unit = {
     val socket: ScallopOption[String] = opt[String]()
     val verbose: ScallopOption[Boolean] = opt[Boolean]()
     val debug: ScallopOption[Boolean] = opt[Boolean]()
-    val library: ScallopOption[File] = opt[File]()
 
     conflicts(socket, List(host, port))
     verify()
@@ -21,7 +20,7 @@ def main(args: String*): Unit = {
   val conf = Conf(args)
   implicit val logger: String => Unit = if (conf.verbose()) println else (msg: String) => ()
   
-  val endpoints = Endpoints(conf.library(), conf.debug())
+  val endpoints = Endpoints(conf.debug())
   val server = if (conf.socket.isDefined) {
     println(s"Using unix socket: ${conf.socket()}")
     Server(endpoints.router, conf.socket())
