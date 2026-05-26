@@ -181,6 +181,10 @@ body {
   }
 }
 
+.visible {
+  visibility: visible !important;
+}
+
 .spacer {
   flex-grow: 1;
 }

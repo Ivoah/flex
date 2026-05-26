@@ -37,16 +37,17 @@ object Templates {
           form(method:="POST", action:=s"/scan/${library.name}",
             button(cls:="scan clickable", Icons.get("refresh")),
             // language=JavaScript
-            script(raw("""
-              $(document.currentScript).parent().on("submit", e => {
+            script(raw(s"""
+              $$(document.currentScript).parent().on("submit", e => {
                 e.preventDefault();
-                const form = $(e.target);
-                $.ajax(form.prop("action"), {
+                const form = $$(e.target);
+                $$.ajax(form.prop("action"), {
                   method: "POST",
                   data: form.serialize(),
-                  success: () => location.reload()
+                  beforeSend: () => $$(e.target).children("button").addClass(["spinning", "visible"]),
+                  success: () => location.assign("/${library.name}"),
+                  error: () => $$(e.target).children("button").removeClass(["spinning", "visible"])
                 });
-                $(e.target).children("button").addClass("spinning");
               });
             """))
           )
