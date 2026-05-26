@@ -23,6 +23,7 @@ object Templates {
     head(
       link(rel:="icon", href:="/static/icon.svg"),
       link(rel:="stylesheet", href:="/static/style.css"),
+      script(src:="/static/jquery-4.0.0.min.js"),
       tag("title")("Flex")
     ),
     body(
@@ -32,7 +33,22 @@ object Templates {
       div(cls:="sidebar",
         for (library <- allLibraries) yield div(cls:="library",
           a(cls:="libraryLink clickable", href:=s"/${library.name}", Icons.get(library.icon), library.name),
-          form(method:="POST", action:=s"/scan/${library.name}", button(cls:="scan clickable", Icons.get("refresh")))
+          form(method:="POST", action:=s"/scan/${library.name}",
+            button(cls:="scan clickable", Icons.get("refresh")),
+            // language=JavaScript
+            script(raw("""
+              $(document.currentScript).parent().on("submit", e => {
+                e.preventDefault();
+                const form = $(e.target);
+                $.ajax(form.prop("action"), {
+                  method: "POST",
+                  data: form.serialize(),
+                  success: () => location.reload()
+                });
+                $(e.target).children("button").addClass("spinning");
+              });
+            """))
+          )
         )
       ),
       div(cls:="movies",

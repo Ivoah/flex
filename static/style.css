@@ -45,7 +45,7 @@ body {
   .library {
     display: flex;
     align-items: center;
-    font-size: 14pt;
+    font-size: 12pt;
     color: lightgray;
     gap: 10px;
 
@@ -151,5 +151,20 @@ body {
     &:hover {
       text-decoration: underline;
     }
+  }
+}
+
+.spinning {
+  animation: spin-animation 1s infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
