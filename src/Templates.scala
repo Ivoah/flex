@@ -19,7 +19,7 @@ object Templates {
   }
   private val playButton = regularPolygon((256, 256), 64, 3)
 
-  def library(allLibraries: Seq[Library], library: Library): String = doctype("html")(html(
+  def library(allLibraries: Seq[Library], currentLibrary: Library): String = doctype("html")(html(
     head(
       link(rel:="icon", href:="/static/icon.svg"),
       link(rel:="stylesheet", href:="/static/style.css"),
@@ -32,7 +32,8 @@ object Templates {
       ),
       div(cls:="sidebar",
         for (library <- allLibraries) yield div(cls:="library",
-          a(cls:="libraryLink clickable", href:=s"/${library.name}", Icons.get(library.icon), library.name),
+          a(cls:=s"libraryLink clickable ${if (library == currentLibrary) "orange" else ""}", href:=s"/${library.name}", Icons.get(library.icon), library.name),
+          div(cls:="spacer"),
           form(method:="POST", action:=s"/scan/${library.name}",
             button(cls:="scan clickable", Icons.get("refresh")),
             // language=JavaScript
@@ -52,7 +53,7 @@ object Templates {
         )
       ),
       div(cls:="movies",
-        for (movie <- library.items.sortBy(_.releaseDate).reverse) yield {
+        for (movie <- currentLibrary.items.sortBy(_.releaseDate).reverse) yield {
           div(cls:="movie",
             div(cls:="poster",
               a(cls:="playButton", href:=s"${movie.url}/play", playButton),
