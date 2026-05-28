@@ -7,7 +7,7 @@ import upickle.Reader
 given Reader[LocalDate] = upickle.reader[String].map(LocalDate.parse)
 
 class TheMovieDB(token: String) extends MetadataExtractor[Movie] {
-  case class ImagesDetails(
+  private case class ImagesDetails(
     base_url: String,
     secure_base_url: String,
     backdrop_sizes: Seq[String],
@@ -16,9 +16,10 @@ class TheMovieDB(token: String) extends MetadataExtractor[Movie] {
     profile_sizes: Seq[String],
     still_sizes: Seq[String],
   ) derives Reader
-  case class ConfigurationDetails(images: ImagesDetails) derives Reader
+  
+  private case class ConfigurationDetails(images: ImagesDetails) derives Reader
 
-  case class MovieDetails(
+  private case class MovieDetails(
     adult: Boolean,
     backdrop_path: String,
     genre_ids: Seq[Int],
@@ -35,7 +36,7 @@ class TheMovieDB(token: String) extends MetadataExtractor[Movie] {
     vote_count: Int,
   ) derives Reader
 
-  case class PaginatedResults[T](page: Int, results: Seq[T]) derives Reader
+  private case class PaginatedResults[T](page: Int, results: Seq[T]) derives Reader
 
   private val BASE_URL: String = "https://api.themoviedb.org/3"
   private val configurationDetails = api[ConfigurationDetails]("/configuration")
@@ -57,9 +58,12 @@ class TheMovieDB(token: String) extends MetadataExtractor[Movie] {
 
   def hydrate(movie: Movie): Movie = {
     val searchResults = api[PaginatedResults[MovieDetails]]("/search/movie", Map("query" -> movie.title, "primary_release_year" -> movie.year.toString))
+    val firstResult = searchResults.results.headOption
     movie.copy(
-      releaseDate = searchResults.results.headOption.map(_.release_date),
-      poster = searchResults.results.headOption.map(d => s"${configurationDetails.images.base_url}w$posterSize${d.poster_path}")
+      releaseDate = firstResult.map(_.release_date),
+      poster = firstResult.map(m => s"${configurationDetails.images.base_url}w$posterSize${m.poster_path}"),
+      summary = firstResult.map(_.overview),
+      backdrop = firstResult.map(m => s"${configurationDetails.images.base_url}original${m.poster_path}")
     )
   }
 }

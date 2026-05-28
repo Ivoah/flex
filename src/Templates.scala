@@ -19,20 +19,20 @@ object Templates {
   }
   private val playButton = regularPolygon((256, 256), 64, 3)
 
-  def library(allLibraries: Seq[Library], currentLibrary: Library): String = doctype("html")(html(
+  private def page(libraries: Seq[Library], currentLibrary: Option[Library], title: String)(content: Frag*): String = doctype("html")(html(
     head(
       link(rel:="icon", href:="/static/icon.svg"),
       link(rel:="stylesheet", href:="/static/style.css"),
       script(src:="/static/jquery-4.0.0.min.js"),
-      tag("title")("Flex")
+      tag("title")(title)
     ),
     body(
       div(cls:="header",
         "Flex"
       ),
       div(cls:="sidebar",
-        for (library <- allLibraries) yield div(cls:="library",
-          a(cls:=s"libraryLink clickable ${if (library == currentLibrary) "orange" else ""}", href:=s"/${library.name}", Icons.get(library.icon), library.name),
+        for (library <- libraries) yield div(cls:="library",
+          a(cls:=s"libraryLink clickable ${if (currentLibrary.contains(library)) "orange" else ""}", href:=s"/${library.name}", Icons.get(library.icon), library.name),
           div(cls:="spacer"),
           form(method:="POST", action:=s"/scan/${library.name}",
             button(cls:="scan clickable", Icons.get("refresh")),
@@ -53,19 +53,29 @@ object Templates {
           )
         )
       ),
-      div(cls:="movies",
-        for (movie <- currentLibrary.items.sortBy(_.releaseDate).reverse) yield {
-          div(cls:="movie",
-            div(cls:="poster",
-              a(cls:="playButton", href:=s"${movie.url}/play", playButton),
-              a(cls:="border", href:=movie.url),
-              img(src:=movie.poster.getOrElse(""))
-            ),
-            a(href:=movie.url, title:=movie.title, movie.title),
-            div(cls:="secondary", movie.releaseDate.map(dateFormat.format).getOrElse("Unknown"))
-          )
-        }
-      )
+      div(cls:="content", content)
     )
   )).render
+
+  def library(allLibraries: Seq[Library], currentLibrary: Library): String = page(allLibraries, Some(currentLibrary), currentLibrary.name)(
+    div(cls:="movies",
+      for (movie <- currentLibrary.items.sortBy(_.releaseDate).reverse) yield {
+        val url = s"${currentLibrary.name}/${movie.title} (${movie.year})"
+        div(cls:="movie",
+          div(cls:="poster",
+            a(cls:="playButton", href:=s"$url/play", playButton),
+            a(cls:="border", href:=url),
+            img(src:=movie.poster.getOrElse(""))
+          ),
+          a(href:=url, title:=movie.title, movie.title),
+          div(cls:="secondary", movie.releaseDate.map(dateFormat.format).getOrElse("Unknown"))
+        )
+      }
+    )
+  )
+
+  def movie(allLibraries: Seq[Library], movie: Movie): String = page(allLibraries, None, movie.title)(
+    img(src:=movie.poster.getOrElse("")),
+    p(movie.summary.getOrElse(""))
+  )
 }

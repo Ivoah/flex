@@ -10,7 +10,7 @@ body {
   display: grid;
   grid-template-areas:
         "header header"
-        "sidebar movies";
+        "sidebar content";
   grid-template-rows: auto 1fr;
   grid-template-columns: auto 1fr;
   padding: 7px;
@@ -89,17 +89,23 @@ body {
   }
 }
 
+.content {
+  grid-area: content;
+}
+
 .movies {
-  grid-area: movies;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 1rem;
+  justify-items: center;
   overflow: scroll;
 }
 
 .movie {
   width: 130px;
-  display: grid;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 
   .poster {
     width: 130px;
@@ -153,16 +159,8 @@ body {
     }
   }
 
-  > a {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    text-wrap: nowrap;
-    color: inherit;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+  a:hover {
+    text-decoration: underline;
   }
 }
 

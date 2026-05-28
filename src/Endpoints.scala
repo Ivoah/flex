@@ -21,6 +21,14 @@ class Endpoints(debug: Boolean = false) {
     case ("GET", "/", _) =>
       Response.Redirect(s"/${Database.getLibraries().head.name}")
 
+    case ("GET", s"/$library/$movie (${IntExtractor(year)})", _) =>
+      val allLibraries = Database.getLibraries()
+      allLibraries.find(_.name == library).flatMap { l =>
+        l.items.find(m => m.title == movie && m.year == year).map { m =>
+          Response(Templates.movie(allLibraries, m))
+        }
+      }.getOrElse(Response.NotFound())
+
     case ("POST", s"/scan/$library", _) =>
       val allLibraries = Database.getLibraries()
       allLibraries.find(_.name == library)

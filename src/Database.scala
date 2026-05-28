@@ -30,8 +30,27 @@ object Database {
 
   def saveMovie(libraryId: Int, movie: Movie): Movie = {
     val movieId = sql"""
-      insert into movie (libraryId, title, year, releaseDate, poster, tmdbId, added)
-      values ($libraryId, ${movie.title}, ${movie.year}, ${movie.releaseDate.orNull}, ${movie.poster.orNull}, ${movie.tmdbId.orNull}, date())
+      insert into movie (
+        libraryId,
+        title,
+        year,
+        releaseDate,
+        poster,
+        tmdbId,
+        added,
+        summary,
+        backdrop
+      )
+      values (
+        $libraryId,
+        ${movie.title},
+        ${movie.year},
+        ${movie.releaseDate.orNull},
+        ${movie.poster.orNull},
+        ${movie.tmdbId.orNull}, date(),
+        ${movie.summary.orNull},
+        ${movie.backdrop.orNull}
+      )
     """.updateGetKey()
     movie.copy(movieId = movieId)
   }

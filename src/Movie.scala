@@ -12,6 +12,8 @@ case class Movie(
   poster: Option[String] = None,
   tmdbId: Option[Int] = None,
   added: Option[LocalDate] = None,
+  summary: Option[String] = None,
+  backdrop: Option[String] = None,
   files: Seq[File] = Seq()
 ) {
   val url: String = s"/movies/$title ($year)"
@@ -28,6 +30,8 @@ object Movie {
     r.getLocalDateOption("releaseDate"),
     r.getStringOption("poster"),
     r.getIntOption("tmdbId"),
-    r.getLocalDateOption("added")
+    r.getLocalDateOption("added"),
+    r.getStringOption("summary"),
+    r.getStringOption("backdrop")
   )
 }
